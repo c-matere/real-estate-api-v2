@@ -1,0 +1,74 @@
+services:
+  # Backend API Service
+  - type: web
+    name: realtor-pro-api
+    env: node
+    rootDir: real-estate-api
+    buildCommand: npm install && npm run migrate && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: "https://realtor-pro-dashboard.onrender.com"
+      - key: DB_NAME
+        fromDatabase:
+          name: realtor-pro-db
+          property: databaseName
+      - key: DB_USER
+        fromDatabase:
+          name: realtor-pro-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: realtor-pro-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: realtor-pro-db
+          property: privateHostname
+      - key: DB_PORT
+        fromDatabase:
+          name: realtor-pro-db
+          property: port
+    autoDeploy: true
+    plan: free
+    healthCheckPath: /health
+    numInstances: 1
+    regions: ["oregon"]
+
+  # Frontend Dashboard Service
+  - type: web
+    name: realtor-pro-dashboard
+    env: node
+    rootDir: real-estate-dashboard
+    buildCommand: npm install && npm run build:prod
+    startCommand: npx serve -s build -l $PORT
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://realtor-pro-api.onrender.com
+      - key: PUBLIC_URL
+        value: .
+      - key: GENERATE_SOURCEMAP
+        value: false
+      - key: CI
+        value: false
+      - key: TSC_COMPILE_ON_ERROR
+        value: true
+    autoDeploy: true
+    plan: free
+    domains:
+      - realtor-pro-dashboard
+    regions: ["oregon"]
+
+# Database configuration
+databases:
+  - name: realtor-pro-db
+    databaseName: realtor_pro
+    user: postgres
+    plan: free  # Consider upgrading for production
+    region: oregon  # Match the region with your services
