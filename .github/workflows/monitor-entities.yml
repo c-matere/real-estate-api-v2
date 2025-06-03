@@ -1,0 +1,55 @@
+name: Monitor Entities
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch:
+    inputs:
+      entity:
+        description: 'Entity to monitor (leave empty for all)'
+        required: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up monitoring
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+        # Install yq for YAML parsing
+        wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        chmod +x /usr/local/bin/yq
+        # Make monitor script executable
+        chmod +x ./deploy/scripts/monitor.sh
+
+    - name: Run monitoring
+      run: |
+        if [ -n "${{ github.event.inputs.entity }}" ]; then
+          # Monitor specific entity
+          ./deploy/scripts/monitor.sh "${{ github.event.inputs.entity }}"
+        else
+          # Monitor all entities
+          for config in ./deploy/config/*.yaml; do
+            if [ "$(basename "$config")" != "monitoring.yaml" ]; then
+              entity=$(basename "$config" .yaml)
+              echo "\n🔄 Monitoring $entity..."
+              ./deploy/scripts/monitor.sh "$entity" || true
+            fi
+          done
+        fi
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Save monitoring results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: monitoring-logs
+        path: |
+          monitoring-*.log
+        retention-days: 7

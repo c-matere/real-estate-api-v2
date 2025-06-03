@@ -1,0 +1,51 @@
+name: Deploy Entity
+
+on:
+  workflow_dispatch:
+    inputs:
+      entity:
+        description: 'Entity to deploy (e.g., entity1)'
+        required: true
+        default: 'entity1'
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+        # Install yq for YAML parsing
+        wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        chmod +x /usr/local/bin/yq
+
+    - name: Deploy
+      run: |
+        chmod +x ./deploy/scripts/deploy.sh
+        ./deploy/scripts/deploy.sh ${{ github.event.inputs.entity }}
+      env:
+        # Netlify
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        # Render
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        # Add other sensitive variables here as needed

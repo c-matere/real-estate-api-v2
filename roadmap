@@ -1,0 +1,105 @@
+# Lease Engine Project Progress
+
+## Project Overview
+The Lease Engine is an AI-powered assistant that monitors and manages real estate data, providing insights and assistance through a chat interface.
+
+## Current Status (2025-04-30)
+
+### ✅ Completed Features
+
+#### Backend Infrastructure
+- ✅ Basic API endpoints (CRUD operations)
+- ✅ Authentication middleware
+- ✅ PostgreSQL database integration
+- ✅ Basic chat endpoint with TogetherAI integration
+- ✅ Basic unit, tenant, and lease models
+
+#### Frontend UI
+- ✅ Chat interface with styled message bubbles
+- ✅ Dashboard layout with activity filtering
+- ✅ Basic notification system
+
+### ⏳ In Progress
+
+#### AI Integration
+- ⏳ TogetherAI API integration (currently returning echo responses)
+- ⏳ Function calling implementation for data analysis
+- ⏳ System message configuration for data access
+
+### 🚧 Planned Features
+
+#### Data Monitoring & Anomaly Detection
+- [ ] Implement `runIntegrityChecks()` with:
+  - Check for units without active leases
+  - Verify invoices are properly linked to units
+  - Ensure payments are tied to valid tenants/leases
+  - Create a comprehensive anomalies report
+
+#### Notifications System
+- [ ] Create `/api/lease-engine/anomalies` endpoint
+- [ ] Implement notification badge counter
+- [ ] Add detailed anomaly views in dashboard
+- [ ] Set up automatic anomaly detection scheduling
+
+#### AI Functionality
+- [ ] Implement `findDataAnomalies` function
+- [ ] Create `listExpiringLeases` function
+- [ ] Add `getFinancialSummary` function
+- [ ] Implement `generatePropertyReport` function
+- [ ] Add proper error handling for AI failures
+
+#### Dashboard Enhancements
+- [ ] Add anomaly detection status panel
+- [ ] Implement drill-down views for data issues
+- [ ] Add data visualization for anomalies
+- [ ] Create maintenance request tracking
+
+### Technical Details
+
+#### Current Architecture
+- Backend: Node.js/Express with PostgreSQL
+- Frontend: React with Material-UI
+- AI: TogetherAI (Meta-Llama-3.3-70B-Instruct-Turbo-Free)
+- Authentication: JWT-based
+
+#### Next Steps
+1. Complete anomaly detection implementation
+2. Build notifications UI
+3. Implement function calling for AI
+4. Add proper error handling and logging
+
+### Known Issues
+- TogetherAI API returning echo responses instead of actual analysis
+- Need to implement proper error handling for API failures
+- Missing maintenance request table in database
+- Need to add proper loading states in UI
+
+### Priority Tasks
+1. Fix TogetherAI API integration
+2. Implement anomaly detection
+3. Build notifications system
+4. Add proper error handling
+
+### Future Enhancements
+- Add more sophisticated data analysis
+- Implement predictive maintenance
+- Add automated report generation
+- Improve AI response quality
+- Add mobile responsiveness
+
+---
+Reset the database
+• If you’re using Sequelize scripts:
+npm run migrate:undo:all
+  npm run migrate
+
+Seed the admin user
+bash
+CopyInsert in Terminal
+  node scripts/seed-admin.js
+Verify login
+  bash
+  CopyInsert in Terminal
+node scripts/test-login.js
+
+Last Updated: 2025-05-12

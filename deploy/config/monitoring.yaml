@@ -1,0 +1,34 @@
+# Monitoring Configuration
+
+# Global settings
+global:
+  alert_email: "your-email@example.com"  # Default alert email
+  slack_webhook: "$SLACK_WEBHOOK_URL"    # From environment variables
+
+# Health check endpoints for each service
+health_checks:
+  frontend:
+    path: "/"
+    expected_status: 200
+    timeout: 5  # seconds
+  api:
+    path: "/api/health"
+    expected_status: 200
+    timeout: 5
+
+# Alert thresholds
+alert_thresholds:
+  response_time: 1000  # ms
+  error_rate: 1       # %
+  uptime: 99.9        # %
+
+# Notification templates
+templates:
+  alert_subject: "🚨 [${entity}] ${alert_type} Alert"
+  alert_message: |
+    *Service*: ${service}
+    *Status*: ${status}
+    *Entity*: ${entity}
+    *Time*: ${time}
+    *Details*: ${details}
+    *Dashboard*: ${dashboard_url}

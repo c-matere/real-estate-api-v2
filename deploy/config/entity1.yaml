@@ -1,0 +1,29 @@
+# Entity Configuration
+entity: entity1
+environment: production
+
+# Frontend Configuration
+frontend:
+  enabled: true
+  provider: netlify
+  site_id: "NETLIFY_SITE_ID"  # Replace with your Netlify site ID
+  domain: "entity1.alphask.entorach.site"
+  build_command: "npm run build"
+  build_dir: "build"
+  environment:
+    REACT_APP_API_URL: "https://api-entity1.onrender.com"
+    # Add other frontend environment variables here
+
+# API Configuration
+api:
+  enabled: true
+  provider: render
+  service_id: "RENDER_SERVICE_ID"  # Replace with your Render service ID
+  environment:
+    NODE_ENV: "production"
+    ALLOWED_ORIGINS: "https://entity1.alphask.entorach.site"
+    # Add other API environment variables here
+    # Example:
+    # DATABASE_URL: "postgresql://..."
+    # JWT_SECRET: "..."
+    # etc.

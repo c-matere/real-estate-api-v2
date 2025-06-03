@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'Multi-tenant Dashboards'
+    orgId: 1
+    folder: 'Multi-tenant Monitoring'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
